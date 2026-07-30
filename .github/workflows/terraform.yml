@@ -13,6 +13,7 @@ jobs:
       matrix:
         working-directory:
           - 01-resource-group
+          - 02-vnet-subnet
     defaults:
       run:
         working-directory: ${{ matrix.working-directory }}
