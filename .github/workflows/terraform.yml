@@ -1,0 +1,36 @@
+name: Terraform CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  terraform-check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        working-directory:
+          - 01-resource-group
+    defaults:
+      run:
+        working-directory: ${{ matrix.working-directory }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init (no backend, no cloud call)
+        run: terraform init -backend=false
+
+      - name: Terraform Validate
+        run: terraform validate
